@@ -189,11 +189,11 @@ Ahora entrar a:
 
 Se observaran dos puntos pequeños, con borde rojo y centro blanco:
 
-![paso 1](https://raw.githubusercontent.com/artorresv/ejercicio/master/pgrouting-test/public/images/img_01.png?token=ACEmbZET9rJn0XMuQM3aP52rbRtoBH6Oks5cd-JywA%3D%3D)
+![paso 1](https://raw.githubusercontent.com/artorresv/varios/master/img_01.png)
 
 Después de algunos segundos se dibuja una línea en color rojo que va del punto incial al punto final:
 
-![paso 2](https://raw.githubusercontent.com/artorresv/ejercicio/master/pgrouting-test/public/images/img_02.png?token=ACEmbYd2lLLLVbtiAuff4ryg4Ip6lBcGks5cd-MRwA%3D%3D)
+![paso 2](https://raw.githubusercontent.com/artorresv/varios/master/img_02.png)
 
 Esta es la ruta más corta para ir en vehículo desde el punto incial al punto final. Ver los detalles en:
 
@@ -206,7 +206,7 @@ El algoritmo para determinar la ruta y en general todos los detalles se pueden c
 
 Unos segundos después de que aparezca la ruta, se mostrarán todos los incidentes reportados al C5, en un radio de 50 metros respecto al trazo de la ruta:
 
-![paso 3](https://raw.githubusercontent.com/artorresv/ejercicio/master/pgrouting-test/public/images/img_03.png?token=ACEmbeVX_D4xqnzq5urt9o3cJGUmRZS0ks5cd-NiwA%3D%3D)
+![paso 3](https://raw.githubusercontent.com/artorresv/varios/master/img_03.png)
 
 Los puntos se agrupan en clusters siempre que la distancia entre ellos sea menor a 20 pixeles.
 Ver detalle en:
@@ -219,11 +219,11 @@ Para examinar el código que accede a la base de datos ver:
 
 Hacer zoom en el mapa para ver los puntos de los incidentes más desagrupados:
 
-![paso 4](https://raw.githubusercontent.com/artorresv/ejercicio/master/pgrouting-test/public/images/img_04.png?token=ACEmbbZvHhxRnRZpLtrphsbIqXcGpg_Qks5cd-OewA%3D%3D)
+![paso 4](https://raw.githubusercontent.com/artorresv/varios/master/img_04.png)
  
 2. Para elegir dos nuevos puntos de origen/destino hacer click en el botón 'clear':
 
-![paso 5](https://drive.google.com/file/d/1F_B-covPW5Yz1KiokHEre6uh7oJfy2_q/view?usp=sharing)
+![paso 5](https://raw.githubusercontent.com/artorresv/varios/master/img_05.png)
 
 Volver a dar click en dos ubicaciones distintas
 
