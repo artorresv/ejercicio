@@ -10,13 +10,13 @@
 
 *Asumiendo que este directorio existe y tiene permisos...*
 
-`cd /opt/postgis/ejercicio/`
+`cd /opt/postgis/`
 
 `git clone https://github.com/artorresv/ejercicio.git`
 
 *Construir la aplicación*
 
-`cd pgrouting-test`
+`cd ejercicio/pgrouting-test`
 
 `npm install`
 
