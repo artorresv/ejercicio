@@ -67,7 +67,7 @@
   var routeLayer = new ol.layer.Vector({
     source: new ol.source.Vector({
       format: new ol.format.WKT(),
-      url: 'http://172.16.1.84:3000/postgis/route'        
+      url: 'http://localhost:3000/postgis/route'        
     }),
     style: new ol.style.Style({
         stroke: new ol.style.Stroke({
@@ -83,7 +83,7 @@
     distance: 20,
     source: new ol.source.Vector({
       format: new ol.format.GeoJSON(),
-      url: 'http://172.16.1.84:3000/postgis/data'
+      url: 'http://localhost:3000/postgis/data'
     })
   });
   
@@ -145,14 +145,14 @@
         distance: 20,
         source: new ol.source.Vector({
           format: new ol.format.GeoJSON(),
-          url: 'http://172.16.1.84:3000/postgis/data?' + viewparams.join('&')
+          url: 'http://localhost:3000/postgis/data?' + viewparams.join('&')
         })
       }));
       clusterLayer.setVisible(true);
       
       routeLayer.setSource(new ol.source.Vector({
         format: new ol.format.WKT(),
-        url: 'http://172.16.1.84:3000/postgis/route?' + viewparams.join('&')
+        url: 'http://localhost:3000/postgis/route?' + viewparams.join('&')
       }));
       routeLayer.setVisible(true);
     }
