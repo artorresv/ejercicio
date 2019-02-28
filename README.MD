@@ -4,6 +4,7 @@
 * docker > 18.06.*
 * osmctools:  `sudo apt-get install osmctools`
 * osm2pgrouting:  `sudo apt-get install osm2pgrouting`
+* psql: `apt-get install postgresql-client-10`
 
 **CLONAR EL REPOSITORIO**
 
@@ -31,8 +32,6 @@ Si todo sale bien el directorio tiene un contenido similar a este:
 
 `-rw-rw-r--   1 atorres atorres 35749 Feb 27 22:09 package-lock.json`
 
-`drwxrwxr-x 133 atorres atorres  4096 Feb 27 22:09 node_modules`
-
 `drwxr-xr-x   2 atorres atorres  4096 Feb 27 21:38 routes`
 
 `drwxr-xr-x   2 atorres atorres  4096 Feb 27 20:54 bin`
@@ -45,22 +44,23 @@ Cambiar al directorio con los datos de prueba:
 
 `cd /opt/postgis/ejercicio/datos`
 
-La imagen de docker es esta:
-
-`https://github.com/Starefossen/docker-pgrouting/`
+(La imagen de docker es esta: `https://github.com/Starefossen/docker-pgrouting/`)
 
 Instalar el contenedor:
 
 `docker run --name pgrouting-test --rm -d -P -p 5432:5432 -e POSTGRES_PASSWORD=123456 -d starefossen/pgrouting`
 
-*Verificar que el contenedor funciona...*
+*Verificar que el contenedor funciona:*
 
 `docker image ls`
 
 `REPOSITORY              TAG                 IMAGE ID            CREATED             SIZE`
+
 `starefossen/pgrouting   latest              780a35ec8668        13 days ago         638MB`
 
-*Para revisar las versiones instaladas...*
+`...`
+
+*Para revisar las versiones instaladas:*
 
 `docker image inspect 780a35ec8668`
 
@@ -90,11 +90,11 @@ Instalar el contenedor:
 
 **PREPARAR DATOS DE CALLES DE OSM**
 
-*Descargar OSM para México, la última versión está actualizada al 2019-02-26T21:14:03Z*
+*Descargar OSM para México, la última versión está actualizada al 2019-02-26T21:14:03Z:*
 
 `wget "https://download.geofabrik.de/north-america/mexico-latest.osm.bz2"`
 
-*Los datos se descomprimen en formato osm (xml), en el archivo "mexico-latest.osm"*
+*Los datos se descomprimen en formato osm (xml), en el archivo "mexico-latest.osm":*
 
 `bzip2 -dk mexico-latest.osm.bz2`
 
@@ -118,7 +118,7 @@ Instalar el contenedor:
 
 *Publicar en "calles_cdmx_osm" los datos de OSM para la CDMX:*
 
-`osm2pgrouting -f mexico-latest-cdmx.osm -c /usr/share/osm2pgrouting/mapconfig.xml -d calles_cdmx_osm -U postgres -W [pass] --clean`
+`osm2pgrouting -f mexico-latest-cdmx.osm -c /usr/share/osm2pgrouting/mapconfig.xml -d calles_cdmx_osm -U postgres --clean`
 
 **PREPARAR LOS DATOS DE REPORTES DEL C5**
 
@@ -132,29 +132,27 @@ Instalar el contenedor:
 
 *Crear la tabla:*
 
-Ver ./datos/create.siniestrosviales.sql
+`psql -h localhost -d calles -p 5432 -U postgres -a -f create.siniestrosviales.sql`
 
-*Copia los registros del csv (sin headers) a la tabla siniestrosviales:*
+*Copia los registros del csv a la tabla siniestrosviales:*
 
 `psql -h localhost -d calles_cdmx_osm -p 5432 -U postgres --command "\copy public.siniestrosviales FROM 'siniestros.csv' DELIMITER ';' CSV ENCODING 'UTF8';"`
 
+*Agrega primary key:*
+
+`psql -h localhost -d calles_cdmx_osm -p 5432 -U postgres -a -f create.primarykey.sql`
+
 *Agregar campo de geometría:*
 
-`ALTER TABLE public.siniestrosviales ADD COLUMN the_geom geometry(Point,4326);`
+`psql -h localhost -d calles_cdmx_osm -p 5432 -U postgres -c 'ALTER TABLE public.siniestrosviales ADD COLUMN the_geom geometry(Point,4326);'`
 
 *Genera la geometría con las columnas correspondientes:*
 
-`UPDATE public.siniestrosviales SET the_geom = ST_GeomFromText('POINT(' || longitud || ' ' || latitud || ')', 4326);`
+`psql -h localhost -d calles_cdmx_osm -p 5432 -U postgres -c "UPDATE public.siniestrosviales SET the_geom = ST_GeomFromText('POINT(' || longitud || ' ' || latitud || ')', 4326);"`
 
 *Crea el índice espacial:*
 
-`CREATE INDEX siniestrosviales_geom_idx`
-
-`    ON public.siniestrosviales USING gist`
-
-`    (the_geom)`
-
-`    TABLESPACE pg_default;`
+`psql -h localhost -d calles_cdmx_osm -p 5432 -U postgres -c 'CREATE INDEX siniestrosviales_geom_idx ON public.siniestrosviales USING gist (the_geom) TABLESPACE pg_default;'`
 
 *Respaldar la base de datos:*
 
@@ -191,18 +189,24 @@ Ahora entrar a:
 
 Se observaran dos puntos pequeños, con borde rojo y centro blanco:
 
+![paso 1](https://raw.githubusercontent.com/artorresv/ejercicio/master/pgrouting-test/public/images/img_01.png?token=ACEmbZET9rJn0XMuQM3aP52rbRtoBH6Oks5cd-JywA%3D%3D)
+
 Después de algunos segundos se dibuja una línea en color rojo que va del punto incial al punto final:
+
+![paso 2](https://raw.githubusercontent.com/artorresv/ejercicio/master/pgrouting-test/public/images/img_02.png?token=ACEmbYd2lLLLVbtiAuff4ryg4Ip6lBcGks5cd-MRwA%3D%3D)
 
 Esta es la ruta más corta para ir en vehículo desde el punto incial al punto final. Ver los detalles en:
 
  * (Línea 20) /opt/postgis/ejercicio/pgrouting-test/routes/postgis.js
  * /opt/postgis/ejercicio/datos/wrk_fromAtoB.sql
  
-`El algoritmo para determinar la ruta y en general todos los detalles se pueden consultar en:`
+El algoritmo para determinar la ruta y en general todos los detalles se pueden consultar en:
 
 `http://docs.pgrouting.org/2.6/en/pgr_dijkstra.html`
 
 Unos segundos después de que aparezca la ruta, se mostrarán todos los incidentes reportados al C5, en un radio de 50 metros respecto al trazo de la ruta:
+
+![paso 3](https://raw.githubusercontent.com/artorresv/ejercicio/master/pgrouting-test/public/images/img_03.png?token=ACEmbeVX_D4xqnzq5urt9o3cJGUmRZS0ks5cd-NiwA%3D%3D)
 
 Los puntos se agrupan en clusters siempre que la distancia entre ellos sea menor a 20 pixeles.
 Ver detalle en:
@@ -215,17 +219,20 @@ Para examinar el código que accede a la base de datos ver:
 
 Hacer zoom en el mapa para ver los puntos de los incidentes más desagrupados:
 
+![paso 4](https://raw.githubusercontent.com/artorresv/ejercicio/master/pgrouting-test/public/images/img_04.png?token=ACEmbbZvHhxRnRZpLtrphsbIqXcGpg_Qks5cd-OewA%3D%3D)
  
 2. Para elegir dos nuevos puntos de origen/destino hacer click en el botón 'clear':
+
+![paso 5](https://raw.githubusercontent.com/artorresv/ejercicio/master/pgrouting-test/public/images/img_05.png?token=ACEmbb0-DHzd6wb7hihPDIghsqXv_yMDks5cd-O2wA%3D%3D)
 
 Volver a dar click en dos ubicaciones distintas
 
 **COMENTARIOS FINALES**
 
 * Los datos para calcular las rutas óptimas se tomaron del proyecto OpenStreetMap para México, son la última versión disponible
-* Los datos, tanto de OpenStreetMap como del C5 no están "limpios", eb general tienen errores e inconsistencias que habría que arreglar para una aplicación real
+* Los datos, tanto de OpenStreetMap como del C5 no están "limpios", en general tienen errores e inconsistencias que habría que arreglar para una aplicación real
 * Naturalmente, la consulta que la base de datos del C5 se puede personalizar tanto como se quiera, por ejemplo para filtrar los incidentes por fecha, hora, tipo de evento, etc.
-* Del mismo modo, las ruta óptima que cálcula la base de datos de calles es solo una de las opciones disponibles, en general:
+* Del mismo modo, la ruta óptima que cálcula la base de datos de calles es solo una de las opciones disponibles, en general:
   * Es posible determinar la ruta óptima para un trayecto en vehículo, caminando, etc.
   * El criterio para determinar la ruta puede ser el tiempo, la distancia o cualquier otra medida de "costo"
 * En general la aplicación y los servicios de datos no están optimizados, hay varias cosas que se pueden hacer para mejorar el rendimiento

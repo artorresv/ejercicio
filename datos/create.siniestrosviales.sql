@@ -32,14 +32,9 @@ CREATE TABLE public.siniestrosviales
     tipoentra character varying(250) COLLATE pg_catalog."default",
     delegaci1 character varying(250) COLLATE pg_catalog."default",
     fecha1 character varying(50) COLLATE pg_catalog."default",
-    diames character varying(10) COLLATE pg_catalog."default",
-    uid bigint NOT NULL DEFAULT nextval('siniestrosviales_uid_seq'::regclass),
-    CONSTRAINT siniestrosviales_pkey PRIMARY KEY (uid)
+    diames character varying(10) COLLATE pg_catalog."default"
 )
 WITH (
     OIDS = FALSE
 )
 TABLESPACE pg_default;
-
-ALTER TABLE public.siniestrosviales
-    OWNER to postgres;
