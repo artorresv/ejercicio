@@ -223,7 +223,7 @@ Hacer zoom en el mapa para ver los puntos de los incidentes más desagrupados:
  
 2. Para elegir dos nuevos puntos de origen/destino hacer click en el botón 'clear':
 
-![paso 5](https://raw.githubusercontent.com/artorresv/ejercicio/master/pgrouting-test/public/images/img_05.png?token=ACEmbb0-DHzd6wb7hihPDIghsqXv_yMDks5cd-O2wA%3D%3D)
+![paso 5](https://drive.google.com/file/d/1F_B-covPW5Yz1KiokHEre6uh7oJfy2_q/view?usp=sharing)
 
 Volver a dar click en dos ubicaciones distintas
 
