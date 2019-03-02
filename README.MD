@@ -132,7 +132,7 @@ Instalar el contenedor:
 
 *Crear la tabla:*
 
-`psql -h localhost -d calles -p 5432 -U postgres -a -f create.siniestrosviales.sql`
+`psql -h localhost -d calles_cdmx_osm -p 5432 -U postgres -a -f create.siniestrosviales.sql`
 
 *Copia los registros del csv a la tabla siniestrosviales:*
 
