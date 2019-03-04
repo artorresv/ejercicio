@@ -88,6 +88,33 @@ Instalar el contenedor:
 `docker run -it --link pgrouting-test:postgres --rm postgres \`
 `  sh -c 'exec psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p "$POSTGRES_PORT_5432_TCP_PORT" -U postgres'`
 
+*Analizar red de calles para completar información sobre conectividad de los nodos:*
+
+`psql -h localhost -p 5432 -U postgres -d calles_cdmx_osm -c "SELECT  pgr_analyzeGraph('ways',0.000001,'the_geom','gid');"`
+
+*El resultado debería ser este:*
+
+```
+NOTICE:  PROCESSING:
+NOTICE:  pgr_analyzeGraph('ways',1e-06,'the_geom','gid','source','target','true')
+NOTICE:  Performing checks, please wait ...
+NOTICE:  Analyzing for dead ends. Please wait...
+NOTICE:  Analyzing for gaps. Please wait...
+NOTICE:  Analyzing for isolated edges. Please wait...
+NOTICE:  Analyzing for ring geometries. Please wait...
+NOTICE:  Analyzing for intersections. Please wait...
+NOTICE:              ANALYSIS RESULTS FOR SELECTED EDGES:
+NOTICE:                    Isolated segments: 1443
+NOTICE:                            Dead ends: 34068
+NOTICE:  Potential gaps found near dead ends: 118
+NOTICE:               Intersections detected: 4824
+NOTICE:                      Ring geometries: 402
+ pgr_analyzegraph
+------------------
+ OK
+(1 row)
+```
+
 **PREPARAR DATOS DE CALLES DE OSM**
 
 *Descargar OSM para México, la última versión está actualizada al 2019-02-26T21:14:03Z:*
